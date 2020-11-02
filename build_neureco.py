@@ -19,7 +19,7 @@ class data_reader():
     def __init__(self, station, type):
         self.station = station
         self.type = type
-        path = '/neureco/' + self.type + '/' + self.station + '/full_data.pkl'
+        path = 'neureco/' + self.type + '/' + self.station + '/full_data.pkl'
 
         if 'Sirea' in type:
             if 'prod' in type:
@@ -69,7 +69,7 @@ class build_neureco():
         self.model_inputs = inputs
         self.model_output = d_read.output
         self.model_name = model_name
-        self.folder = '/neureco/' + self.type + '/' + self.station + '/' + 'model_' + self.model_name + '/'
+        self.folder = 'neureco/' + self.type + '/' + self.station + '/' + 'model_' + self.model_name + '/'
         self.model_address = self.folder + 'model.neureco'
         self.norm_case = norm_case
         if not os.path.exists(self.folder):
