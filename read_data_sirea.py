@@ -215,7 +215,7 @@ def main(station):
     else:
         d_read = data_reader(station)
         d_read.process_data(station)
-    folder = '../neureco/' + str(d_read.station) + '/'
+    folder = '/neureco/' + str(d_read.station) + '/'
 
     if not os.path.exists(folder):
         os.mkdir(folder)
