@@ -3,3 +3,7 @@ jupyter nbextension enable --py widgetsnbextension
 jupyter labextension install @jupyter-widgets/jupyterlab-manager@0.38 --minimize=False
 jupyter contrib nbextension install --user
 jupyter nbextension enable collapsible_headings/main
+jupyter nbextension enable collapsible_headings/main
+jupyter nbextension enable hide_input_all/main
+jupyter nbextension enable hide_input/main
+jupyter nbextension enable toc2/main
