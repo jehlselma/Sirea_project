@@ -1,6 +1,14 @@
 import pandas as pd
 import numpy as np
 import holidays
+bleu = '#01506B'
+vert = '#36A99E'
+import matplotlib.pyplot as plt
+from IPython.display import display, Markdown, clear_output
+import ipywidgets as widgets
+from ipywidgets import IntSlider
+from ipywidgets import HBox, Label
+
 
 
 class stockage():
@@ -86,35 +94,29 @@ class stockage():
         newdf['annees_amortissement'] = self.prix_batterie / (newdf.gain_E_par_an)
         return newdf
 
-class opt_load():
-    def __init__(self, df):
-        df.insert(1, 'day', df.index.dayofyear)
-        self.df = df
-    
-    def shift_data(self, day):
-        df = self.df
-        df_day = df[df.day == day]
-        self.max_prod = df_day.loss_storage.max()
-        self.max_load = df_day.EDF_storage.max()
-        self.i_prod = df_day.loss_storage.idxmax()
-        self.i_load = df_day.EDF_storage.idxmax()
-        loss = [df_day.loss_storage]
-        edf=[df_day.EDF_storage]
-        if df_day.weekday.max() == 0:
-            while (self.max_prod > 0) & (self.max_load > 0):
-                to_shift = min(self.max_load, self.max_prod)
-                df_day.loc[self.i_prod, 'loss_storage'] -= to_shift
-                df_day.loc[self.i_load, 'EDF_storage'] -= to_shift
 
-                self.max_prod = df_day.loss_storage.max()
-                self.max_load = df_day.EDF_storage.max()
-                self.i_prod = df_day.loss_storage.idxmax()
-                self.i_load = df_day.EDF_storage.idxmax()
-                
-                loss.append(df_day.loss_storage)
-                edf.append(df_day.EDF_storage)
-            self.df.loc[df_day.index, :] = df_day 
-        return loss, edf
+class opti_load():
+    def __init__(self, df):
+        self.df = df
+
+    def shift_data(self, day):
+        df_day = self.df[self.df.index.strftime("%Y-%m-%d") == day.strftime("%Y-%m-%d")]
+        max_prod = df_day.export_storage_kW.max()
+        max_load = df_day.import_storage_kW.max()
+        i_prod = df_day.export_storage_kW.idxmax()
+        i_load = df_day.import_storage_kW.idxmax()
+        if df_day.index.weekday.max() < 5:
+            while (max_prod > 0) & (max_load > 0):
+                to_shift = min(max_load, max_prod)
+                df_day.loc[i_prod, 'export_storage_kW'] -= to_shift
+                df_day.loc[i_load, 'import_storage_kW'] -= to_shift
+
+                max_prod = df_day.export_storage_kW.max()
+                max_load = df_day.import_storage_kW.max()
+                i_prod = df_day.export_storage_kW.idxmax()
+                i_load = df_day.import_storage_kW.idxmax()
+            self.df.loc[df_day.index, :] = df_day
+
 
 
 

@@ -2,19 +2,7 @@ import pandas as pd
 import numpy as np
 import numpy.linalg as la
 
-def grouped_pca_matrix(df, output, feature, group_by):
-    data = df[group_by + [feature, output]]
-    data = data.assign(groupby=0)
-    for i in range(len(group_by)):
-        power = pow(2, len(group_by) - (i + 1))
-        if power == 1:
-            power = 0
-        data.loc[:,'groupby'] += data[group_by[i]] * pow(10, power)
-    df = data.groupby(by=[feature] + group_by).mean().reset_index().set_index([feature, 'groupby'])
-    df = df[[output]].unstack().transpose()
-    return df
-
-def PCA(data, output, feature):
+def grouped_pca_matrix(df, output, feature):
     if feature == 'hour':
         group_by = ['day']
     elif feature == 'day':
@@ -26,7 +14,18 @@ def PCA(data, output, feature):
     else:
         group_by = ['day', 'hour']
 
-    df = grouped_pca_matrix(data, output, feature, group_by).dropna()
+    data = df[group_by + [feature, output]]
+    data = data.assign(groupby=0)
+    for i in range(len(group_by)):
+        power = pow(2, len(group_by) - (i + 1))
+        if power == 1:
+            power = 0
+        data.loc[:,'groupby'] += data[group_by[i]] * pow(10, power)
+    df = data.groupby(by=[feature] + group_by).mean().reset_index().set_index([feature, 'groupby'])
+    df = df[[output]].unstack().transpose()
+    return df
+
+def PCA(data, df, feature):
     if len(df) > 0:
         cov = df.cov()
         eig_val, eig_vec = la.eig(cov)
