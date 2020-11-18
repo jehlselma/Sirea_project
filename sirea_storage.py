@@ -81,7 +81,7 @@ class stockage():
         self.df = df
 
     def interet_stockage(self, d_read):
-        self.add_storage(d_read)
+        # self.add_storage(d_read)
         df = self.df
         duration = (df.index.to_series().max() - df.index.to_series().min()).days / 365
 
@@ -94,13 +94,8 @@ class stockage():
         newdf['annees_amortissement'] = self.prix_batterie / (newdf.gain_E_par_an)
         return newdf
 
-
-class opti_load():
-    def __init__(self, df):
-        self.df = df
-
     def shift_data(self, day):
-        df_day = self.df[self.df.index.strftime("%Y-%m-%d") == day.strftime("%Y-%m-%d")]
+        df_day = self.df[self.df.index.strftime("%Y-%m-%d") == day]
         max_prod = df_day.export_storage_kW.max()
         max_load = df_day.import_storage_kW.max()
         i_prod = df_day.export_storage_kW.idxmax()
@@ -116,6 +111,8 @@ class opti_load():
                 i_prod = df_day.export_storage_kW.idxmax()
                 i_load = df_day.import_storage_kW.idxmax()
             self.df.loc[df_day.index, :] = df_day
+
+
 
 
 
